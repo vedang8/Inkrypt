@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import Logo from '../../images/Logo.jpg';
 import "./Login.css";
 
 const Login = () => {
@@ -25,13 +26,10 @@ const Login = () => {
     return (
         <>
         <div className="login-container">
-          <div className="left-half">
-            
-          </div>
-          
           <section>
             <div className="form_data">
               <div className="form_heading">
+                <img src={Logo} alt="Image" />
                 <h1>Welcome Back, Log In</h1>
               </div>
               <form>

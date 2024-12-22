@@ -18,6 +18,7 @@ section .form_data{
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: rgb(245, 208, 220);
 }
 
 .form_heading{
@@ -28,11 +29,12 @@ section .form_data{
 
 .form_data h1{
     font-size: 34px;
-    color: #3e6c02;;
+    color: #6c0249;
+    margin-top: 10px ;
 }
 
 .form_data p{
-    color: #3e6c02;
+    color: #6c0249;
     font-size: 15px;
     margin-top: 19px;
 }
@@ -52,7 +54,6 @@ section .form_data{
     margin-bottom: 14px;
     margin-top: 9px;
     font-size: 14px;
-    
 }
 
 .form_data form .form_input label{
@@ -67,7 +68,7 @@ section .form_data{
 }
 
 .form_data form .form_input input:focus{
-    border:2px solid rgba(2, 90, 24, 0.6);
+    border:2px solid rgba(99, 17, 85, 0.6);
 }
 
 
@@ -86,7 +87,7 @@ section .form_data{
     margin-top: 12px;
     font-size: 14px;
     font-weight: 600;
-    color: #3e6c02;
+    color: #db2fb0;
     background-color: #EDF2F7;
     border-radius: 5px;
     cursor: pointer;
@@ -99,7 +100,7 @@ form .btn{
     border: none;
     outline: none;
     border-radius: 5px;
-    background-color:#3e6c02;
+    background-color:#6c0250;
     color: #fff;
     font-weight: 600;
     font-size: 18px;
@@ -107,7 +108,6 @@ form .btn{
     cursor: pointer;
     transition: all .3s;
 }
-
 
 form .btn:hover{
     background-color: #57ec32;   
@@ -129,14 +129,14 @@ form .btn:hover{
    width: 90px;
    cursor: pointer;
    float: right;
-   background-color: #3e6c02;
+   background-color: #7a1f5a;
    color:#fff;
    border: none;
 }
 
 .btn:hover{
-    background-color: #acef55;   
-    color:#3e6c02;
+    background-color: #c34c97;   
+    color:#6c024c;
 }
 
 /* Add this to your stylesheet */
@@ -158,4 +158,10 @@ form .btn:hover{
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
+
+section .form_heading img{
+    width: 500px;
+    height: 200px;
+    margin-bottom: 15px; 
+}
   
