@@ -17,6 +17,10 @@ const noteSchema = new mongoose.Schema({
     content: {
         type: String,
     },
+    tags: {
+        type: [String],
+        default: []
+    },
     isPinned: {
         type: Boolean,
         default: false
