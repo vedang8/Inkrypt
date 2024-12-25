@@ -1,5 +1,6 @@
 const users = require('../models/User');
 const bcrypt = require('bcryptjs');
+const generateAuthToken = require("../utils/generateAuthToken");
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -42,6 +43,56 @@ exports.register = async (req, res) => {
         }
     }catch(error){
         console.error("Failed to register user: ", error.message);
+        return res.status(500).json({
+            status: 500,
+            error: "Internal server error"
+        });
+    }
+};
+
+// Login user
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
+
+    if(!email || !password){
+        return res.status(422).json({
+            status: 422,
+            error: "All fields are required"
+        });
+    }
+    try{
+        const userValid = await users.findOne({email: email});
+
+        if(!userValid){
+            return res.status(422).json({
+                status: 422,
+                error: "Invalid details"
+            });
+        }
+
+        // matching the password
+        const isMatch = await bcrypt.compare(password, userValid.password);
+        if(!isMatch){
+            return res.status(422).json({
+                status: 422,
+                error: "Invalid details"
+            });
+        }
+
+        // Generate token
+        const token = await generateAuthToken(userValid._id);
+        
+        // set cookie with th token
+        res.cookie("usercookie", token, {
+            expires: new Date(Date.now() + 3600000),
+            httpOnly: true
+        });
+
+        return res.status(201).json({
+
+        });
+    }catch(error){
+        console.error("Login failed: ", error.message);
         return res.status(500).json({
             status: 500,
             error: "Internal server error"
