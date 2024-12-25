@@ -80,17 +80,23 @@ exports.login = async (req, res) => {
         }
 
         // Generate token
-        const token = await generateAuthToken(userValid._id);
-        
-        // set cookie with th token
-        res.cookie("usercookie", token, {
-            expires: new Date(Date.now() + 3600000),
-            httpOnly: true
-        });
+        const token = generateAuthToken(userValid._id);
+        if(token){
+            userValid.tokens.push({token});
+            await userValid.save();
 
-        return res.status(201).json({
+            // set cookie with th token
+            res.cookie("usercookie", token, {
+                expires: new Date(Date.now() + 3600000),
+                httpOnly: true
+            });
 
-        });
+            return res.status(201).json({
+                status: 201,
+                message: "User is Logged in Successfully",
+                token
+            });
+        }        
     }catch(error){
         console.error("Login failed: ", error.message);
         return res.status(500).json({
