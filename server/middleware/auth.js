@@ -8,12 +8,17 @@ const auth = async(req, res, next) => {
         || req.body.token
         || req.header("Authorization").replace("Bearer ", "");
         //console.log("Token: ", token);
+        
+        if (!token) {
+            return res.status(401).json({ error: "No token provided" });
+        }
+
         const verifytoken = jwt.verify(token, JWT_SECRET);
         const rootUser = await users.findOne({_id: verifytoken._id});
         //console.log("root user: ", rootUser);
 
         if(!rootUser){
-            throw new Error("user not found");
+            return res.status(404).json({ error: "User not found" });
         }
 
         req.token = token;
@@ -22,8 +27,8 @@ const auth = async(req, res, next) => {
 
         next();
     }catch(error){
-        console.log(error);
-        res.status(500).json({
+        console.error("Authentication error: ", error.message);
+        res.status(401).json({
             error: "Unauthorized no token provided"
         });
     }
