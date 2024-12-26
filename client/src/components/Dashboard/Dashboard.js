@@ -9,7 +9,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const notes = useState([]);
-{/*
+
   const DashboardValid = async () => {
     dispatch(setLoader(true));
     let token = localStorage.getItem("usersdatatoken");
@@ -24,18 +24,54 @@ const Dashboard = () => {
       });
       const data = await res.json();
       dispatch(setLoader(false));
-      if(res.ok){
-
+      if(data.status === 201){
+          navigate("/home");
+      }else{
+        throw new Error(data.message);
       }
     }catch(error){
-
+      dispatch(setLoader(false));
+      dispatch(logout());
+      message.error(error.message);
+      navigate('/login');
     }
   };
+
   useEffect(() => {
-    //DashboardValid();
+    DashboardValid();
   }, []);
-  */}
   
+  const logoutUser = async () => {
+    dispatch(setLoader(true));
+    let token = localStorage.getItem("usersdatatoken");
+    try{
+      const res = await fetch("/api/user/logout", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+          Accept: "application/json",
+        },
+        credentials: "include",
+      });
+      
+      const data = await res.json();
+      dispatch(setLoader(false));
+      if(data.status === 201){
+        localStorage.removeItem("usersdatatoken");
+        dispatch(logout());
+        message.success("Logged out successfully");
+        navigate("/login");
+      }else{
+        throw new Error(data.message);
+      }
+    }catch(error){
+      dispatch(setLoader(false));
+      message.error(error.message);
+      navigate("/home");
+    }
+  };
+
   return (
     <div className="bg-gradient-to-r from-pink-300 via-pink-200 to-peach-100 min-h-screen">
   {/* Navbar */}
@@ -47,6 +83,7 @@ const Dashboard = () => {
         <img src="https://via.placeholder.com/40" alt="Profile" className="rounded-full w-10 h-10" />
         <span className="text-sm">John Doe</span>
         <i className="ri-logout-box-r-line ml-2 cursor-pointer"
+          onClick={()=> logoutUser()}
           ></i>
       </div>
     </div>
