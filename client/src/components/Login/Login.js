@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setLoader } from "../../redux/Slice/LoaderSlice";
+import { message } from "antd";
 import Logo from '../../images/Logo.jpg';
 import "./Login.css";
 
@@ -10,6 +13,7 @@ const Login = () => {
         password: "",
     });
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const setVal = (e) => {
         const { name, value } = e.target;
         setInpval(() => {
@@ -20,9 +24,49 @@ const Login = () => {
         });
     };
 
-    const loginuser = () => {
+    const loginuser = async (e) => {
+      e.preventDefault();
+      const { email, password } = inpval;
+  
+      if (email === "") {
+        message.error("Please enter your email");
+      } else if (!email.includes("@gmail.com")) {
+        message.error("Please enter a valid email");
+      } else if (password === "") {
+        message.error("Enter your password");
+      } else if (password.length < 6) {
+        message.error("Password must be at least 6 characters");
+      } else {
+        dispatch(setLoader(true));
+        try {
+          const data = await fetch("/api/user/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+          const res = await data.json();
+          dispatch(setLoader(false));
+          console.log(res);
+          if (res.status === 201) {
+            localStorage.setItem("usersdatatoken", res.result.token);
+            message.success("Welcome to CARBON CREDIT MARKETPLACE");
+            navigate("/home");
+            setInpval({ ...inpval, email: "", password: "" });
+          } else if (res.error === "User account is blocked") {
+            message.error("Your account is blocked!!!");
+          } else {
+            message.error("Invalid Details");
+          }
+        } catch (error) {
+          dispatch(setLoader(false));
+          message.error("An error occurred. Please try again later.");
+          console.error("Login error:", error);
+        }
+      }
+    };
 
-    }
     return (
         <>
         <div className="login-container">
