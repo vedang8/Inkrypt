@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLoader } from "../../redux/Slice/LoaderSlice";
+import { login, logout } from "../../redux/Slice/UserSlice";
 import { message } from "antd";
 import Logo from '../../images/Logo.jpg';
 import "./Login.css";
@@ -48,10 +49,13 @@ const Login = () => {
           });
           const res = await data.json();
           dispatch(setLoader(false));
-          console.log(res);
+          //console.log(res);
           if (res.status === 201) {
-            localStorage.setItem("usersdatatoken", res.result.token);
-            message.success("Welcome to CARBON CREDIT MARKETPLACE");
+            // setting the token in the localStorage
+            localStorage.setItem("usersdatatoken", res.token);
+            // setting the name of the user in the redux state
+            dispatch(login(res.name));
+            message.success("Welcome to INKRYPT");
             navigate("/home");
             setInpval({ ...inpval, email: "", password: "" });
           } else if (res.error === "User account is blocked") {

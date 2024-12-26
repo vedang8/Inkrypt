@@ -1,21 +1,41 @@
-import React from 'react'
+import React, { useState, useEffect} from 'react'
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setLoader } from "../../redux/Slice/LoaderSlice";
+import { logout } from "../../redux/Slice/UserSlice";
+import { message } from "antd";
 
 const Dashboard = () => {
-    const notes = [
-        { title: "Note 1", pinned: false },
-        { title: "Note 2", pinned: false },
-        { title: "Note 3", pinned: true },
-        { title: "Note 4", pinned: false },
-        { title: "Note 5", pinned: false },
-        { title: "Note 6", pinned: true },
-        { title: "Note 5", pinned: false },
-        { title: "Note 6", pinned: true },
-        { title: "Note 5", pinned: false },
-        { title: "Note 6", pinned: true },
-        { title: "Note 5", pinned: false },
-        { title: "Note 6", pinned: true },
-      ];
-    
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const notes = useState([]);
+{/*
+  const DashboardValid = async () => {
+    dispatch(setLoader(true));
+    let token = localStorage.getItem("usersdatatoken");
+
+    try{
+      const res = await fetch("/api/user/validuser", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      const data = await res.json();
+      dispatch(setLoader(false));
+      if(res.ok){
+
+      }
+    }catch(error){
+
+    }
+  };
+  useEffect(() => {
+    //DashboardValid();
+  }, []);
+  */}
+  
   return (
     <div className="bg-gradient-to-r from-pink-300 via-pink-200 to-peach-100 min-h-screen">
   {/* Navbar */}

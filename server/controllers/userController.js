@@ -90,10 +90,11 @@ exports.login = async (req, res) => {
                 expires: new Date(Date.now() + 3600000),
                 httpOnly: true
             });
-
+            
             return res.status(201).json({
                 status: 201,
                 message: "User is Logged in Successfully",
+                name: userValid.fname ,
                 token
             });
         }        
