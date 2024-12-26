@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "proxy": "http://localhost:8009/",
+  "proxy": "http://localhost:7000/",
   "main": "postcss.config.js",
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",

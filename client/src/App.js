@@ -5,7 +5,7 @@ import Dashboard  from './components/Dashboard/Dashboard';
 import {useSelector} from "react-redux";
 import Spinner from './utils/Spinner';
 function App() {
-  const {loading} = useSelector(state=>state.loader);
+  const loading = useSelector(state=>state.loader.value);
   return (
     <>
     {loading && <Spinner/>}

@@ -4,9 +4,9 @@ const generateAuthToken = require("../utils/generateAuthToken");
 
 // Register a new user
 exports.register = async (req, res) => {
-    const { name, email, password, profilePicture } = req.body;
-    
-    if(!name || !email || !password){
+    const { fname, email, password, profilePicture } = req.body;
+    console.log("name: ", fname);
+    if(!fname || !email || !password){
         return res.status(422).json({
             status: 422,
             error: "All fields are required"
@@ -28,7 +28,7 @@ exports.register = async (req, res) => {
 
             // Save user to the database
             const user = new users({
-                name, 
+                fname, 
                 email, 
                 password: hashedPassword,
                 profilePicture
