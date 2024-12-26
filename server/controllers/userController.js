@@ -113,7 +113,9 @@ exports.validUser = async(req, res) => {
         const ValidUserOne = await users.findOne({_id: req.userId});
         if(ValidUserOne){
             return res.status(201).json({
-                status: 201
+                status: 201,
+                name: ValidUserOne.fname,
+                profile: ValidUserOne.profilePicture
             });
         }
     }catch(error){

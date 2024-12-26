@@ -2,14 +2,14 @@ import React, { useState, useEffect} from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
-import { logout } from "../../redux/Slice/UserSlice";
+import { login, logout, selectUser } from "../../redux/Slice/UserSlice";
 import { message } from "antd";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const notes = useState([]);
-
+  const user = useSelector(selectUser);
   const DashboardValid = async () => {
     dispatch(setLoader(true));
     let token = localStorage.getItem("usersdatatoken");
@@ -25,6 +25,7 @@ const Dashboard = () => {
       const data = await res.json();
       dispatch(setLoader(false));
       if(data.status === 201){
+          dispatch(login({name: data?.name, profile: data?.profile}))
           navigate("/home");
       }else{
         throw new Error(data.message);
@@ -74,20 +75,52 @@ const Dashboard = () => {
 
   return (
     <div className="bg-gradient-to-r from-pink-300 via-pink-200 to-peach-100 min-h-screen">
-  {/* Navbar */}
-  <nav className="flex justify-between items-center p-4 bg-pink-400">
-    <div className="text-5xl font-bold"><h1 className='text-pink-900'>INKRYPT</h1></div>
-    <div className="flex items-center space-x-4">
-      <input type="text" placeholder="Search..." className="p-3 rounded-md bg-pink-300 text-pink-800" />
-      <div className="flex items-center space-x-2">
-        <img src="https://via.placeholder.com/40" alt="Profile" className="rounded-full w-10 h-10" />
-        <span className="text-sm">John Doe</span>
-        <i className="ri-logout-box-r-line ml-2 cursor-pointer"
-          onClick={()=> logoutUser()}
-          ></i>
+    <div className="sticky top-0 z-50 ">
+      {/* Navbar */}
+    <nav className="flex justify-between items-center p-5 bg-pink-400">
+      {/* Logo Name*/}
+      <div className="text-5xl font-bold">
+        <h1 className='text-pink-900'>
+          INKRYPT
+        </h1>
       </div>
+      <div className="flex items-center space-x-4">
+        {/* Search Bar */}
+        <input type="text" placeholder="Search..." className="p-3 rounded-md bg-pink-300 text-pink-800" />
+        <div className="bg-white bg-opacity-50 py-2 px-5 rounded flex items-center gap-1">
+          <img src={user?.profile} alt="Profile" className="rounded-full w-10 h-10 object-cover" />
+          <span className="text-xl text-pink-900 mr-5">{user?.name}</span>
+          <i className="ri-logout-box-r-line mr-10 cursor-pointer text-pink-800"
+            onClick={()=> logoutUser()}
+          ></i>
+        </div>
+      </div>
+    </nav>
+    <div className="mt-4 flex justify-end space-x-4">
+    {/* Create New Note Button */}
+    <button className="flex items-center bg-pink-500 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:bg-pink-600 transition duration-300">
+      <span className="text-lg mr-2">+</span> Create New Note
+    </button>
+
+    {/* Meta-AI Symbol Button */}
+    <button className="flex items-center mr-5 justify-center bg-gray-800 text-white w-12 h-12 rounded-full shadow-lg hover:bg-gray-700 transition duration-300">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 4.5c2.485-1.488 5.515-1.488 8 0C23.5 7 23.5 10.992 20 12.996c-3.5 2.004-7.5 2.004-11 0C.5 10.992.5 7 4 4.5c2.485-1.488 5.515-1.488 8 0zm0 0c-2.485 1.488-5.515 1.488-8 0C.5 4.992.5 8.984 4 10.996c3.5 2.004 7.5 2.004 11 0C23.5 8.984 23.5 4.992 20 4.5c-2.485-1.488-5.515-1.488-8 0zm0 9.5c-2.485 1.488-5.515 1.488-8 0C.5 15.984.5 19.976 4 21.988c3.5 2.004 7.5 2.004 11 0 3.5-2.004 3.5-6 0-8.012-2.485-1.488-5.515-1.488-8 0z"
+        />
+      </svg>
+    </button>
     </div>
-  </nav>
+    </div>
 
   {/* Dashboard Content */}
   <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -99,10 +132,10 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold text-maroon-800">{note.title}</h3>
           <div className="flex items-center space-x-2">
-            <button className="p-2 rounded-full bg-pink-200 hover:bg-maroon-300 text-maroon-800">
+            <button className="p-2 text-maroon-800">
               📌
             </button>
-            <button className="p-2 rounded-full bg-pink-200 hover:bg-maroon-300 text-maroon-800">
+            <button className="p-2 text-maroon-800">
               ⋮
             </button>
           </div>
@@ -112,7 +145,7 @@ const Dashboard = () => {
   </div>
 </div>
 
-  )
+  );
 }
 
 export default Dashboard

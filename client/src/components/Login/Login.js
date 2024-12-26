@@ -54,7 +54,7 @@ const Login = () => {
             // setting the token in the localStorage
             localStorage.setItem("usersdatatoken", res.token);
             // setting the name of the user in the redux state
-            dispatch(login(res.name));
+            dispatch(login({name: res.name}));
             message.success("Welcome to INKRYPT");
             navigate("/home");
             setInpval({ ...inpval, email: "", password: "" });

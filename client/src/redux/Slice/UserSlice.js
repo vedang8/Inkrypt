@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
-        value: null,
+        user: null,
     },
     reducers: { // contains the value to manage the loading
         login: (state, action) => {
