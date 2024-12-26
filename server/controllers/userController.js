@@ -90,7 +90,7 @@ exports.login = async (req, res) => {
                 expires: new Date(Date.now() + 3600000),
                 httpOnly: true
             });
-            
+
             return res.status(201).json({
                 status: 201,
                 message: "User is Logged in Successfully",
@@ -104,5 +104,23 @@ exports.login = async (req, res) => {
             status: 500,
             error: "Internal server error"
         });
+    }
+};
+
+// Valid user
+exports.validUser = async(req, res) => {
+    try{
+        const ValidUserOne = await users.findOne({_id: req.userId});
+        if(ValidUserOne){
+            return res.status(201).json({
+                status: 201
+            });
+        }
+    }catch(error){
+        console.error("Validation Error: ", error.message);
+        return res.status(500).json({
+            status: 500,
+            error: "Internal server error"
+        });   
     }
 };
