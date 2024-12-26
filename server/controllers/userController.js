@@ -124,3 +124,24 @@ exports.validUser = async(req, res) => {
         });   
     }
 };
+
+// logout user
+exports.logOut = async(req, res) => {
+    try{
+        req.rootUser.tokens = req.rootUser.tokens.filter((curelem) => {
+            return curelem.token !== req.token;
+        });
+
+        res.clearCookie("usercookie", {path: "/"});
+
+        return res.status(201).json({
+            status: 201
+        });
+    }catch(error){
+        console.error("Logout Error: ", error.message);
+        return res.status(500).json({
+            status: 500,
+            error: "Internal server error"
+        }); 
+    }
+}; 
