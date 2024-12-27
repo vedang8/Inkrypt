@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
 import { login, logout, selectUser } from "../../redux/Slice/UserSlice";
 import { message } from "antd";
-import { v4 as uuidv4 } from "uuid";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -41,7 +40,6 @@ const Dashboard = () => {
 
   const createNote = async () => {
     dispatch(setLoader(true));
-    const newNote = {noteId: uuidv4(), title: "Untitled", content: "" };
     try{
       const res = await fetch("/api/notes/create", {
         method: "POST",
@@ -49,7 +47,6 @@ const Dashboard = () => {
           "Content-Type" : "application/json",
           Authorization: localStorage.getItem("usersdatatoken"),
         },
-        body: JSON.stringify(newNote)
       });
       const data = await res.json();
       dispatch(setLoader(false));
