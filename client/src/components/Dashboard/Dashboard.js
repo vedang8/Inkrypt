@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
 import { login, logout, selectUser } from "../../redux/Slice/UserSlice";
 import { message } from "antd";
+import { v4 as uuidv4 } from "uuid";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -35,6 +36,32 @@ const Dashboard = () => {
       dispatch(logout());
       message.error(error.message);
       navigate('/login');
+    }
+  };
+
+  const createNote = async () => {
+    dispatch(setLoader(true));
+    const newNote = {noteId: uuidv4(), title: "Untitled", content: "" };
+    try{
+      const res = await fetch("/api/notes/create", {
+        method: "POST",
+        headers: {
+          "Content-Type" : "application/json",
+          Authorization: localStorage.getItem("usersdatatoken"),
+        },
+        body: JSON.stringify(newNote)
+      });
+      const data = await res.json();
+      dispatch(setLoader(false));
+      if(data.status === 201){
+        message.success("New note is created successfully");
+        navigate(`/note-display/${data?.noteId}`);
+      }else{
+        throw new Error(data.message);
+      }
+    }catch(error){
+      dispatch(setLoader(false));
+      message.error("Failed to create note");
     }
   };
 
@@ -98,7 +125,9 @@ const Dashboard = () => {
     </nav>
     <div className="mt-4 flex justify-end space-x-4">
     {/* Create New Note Button */}
-    <button className="flex items-center bg-pink-500 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:bg-pink-600 transition duration-300">
+    <button className="flex items-center bg-pink-500 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:bg-pink-600 transition duration-300"
+      onClick={()=> createNote()}
+    >
       <span className="text-lg mr-2">+</span> Create New Note
     </button>
 
