@@ -15,6 +15,7 @@ exports.createNewNote = async (req, res) => {
         });
         const savedNote = await newNote.save();
         return res.status(201).json({
+            status: 201,
             noteId: savedNote.noteId
         });
     }catch(error){
