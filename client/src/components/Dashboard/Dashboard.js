@@ -13,7 +13,6 @@ const Dashboard = () => {
   const DashboardValid = async () => {
     dispatch(setLoader(true));
     let token = localStorage.getItem("usersdatatoken");
-
     try{
       const res = await fetch("/api/user/validuser", {
         method: "GET",
