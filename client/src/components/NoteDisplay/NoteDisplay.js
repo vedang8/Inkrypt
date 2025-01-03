@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
+import { message } from "antd";
 import './NoteDisplay.css';
 import Toolbar from "../Toolbar/Toolbar";
 
@@ -36,7 +37,7 @@ const NoteDisplay = ({onCloseNote}) => {
     };
 
     const handleEditClick = () => {
-        navigate(`/note/edit/${note?.id}`);
+        navigate(`/note/edit/${note?.noteId}`);
     };
 
     useEffect(() => {
@@ -47,7 +48,7 @@ const NoteDisplay = ({onCloseNote}) => {
             <Toolbar onEdit={handleEditClick} onCloseNote={onCloseNote} />
             <h1>{note?.title || "Untitled"}</h1>
             <div 
-                dangerouslySetInnerHTML={{ __html: note?.content || "" }} 
+                dangerouslySetInnerHTML={{ __html: note?.content || "No content " }} 
             />
         </div>
     )

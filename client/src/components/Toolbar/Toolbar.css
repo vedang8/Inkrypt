@@ -1,35 +1,36 @@
 .toolbar {
-    margin-bottom: 10px;
+    
     align-items: center;
     display: flex;
-    gap: 10px;
-    justify-content: flex-start;
+    gap: 8px; /* Smaller, consistent spacing between buttons */
     padding: 10px;
     position: sticky;
     background-color: #bc85db; /* Bright background */
     top: 0;
     z-index: 1000;
-    width: calc(100% - 140px);
-    margin-left: 55px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    width: 40%; /* Full width for the toolbar */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
     border-radius: 8px; /* Rounded corners */
 }
 
 .toolbar button {
-    padding: 10px 12px; /* Increased padding for better touch target */
+    padding: 8px; /* Equal padding for all buttons */
     border: none; /* Remove default border */
-    background-color: #ffffff; /* Light background for buttons */
+    background-color: #ffffff; /* Light background */
     color: #333; /* Dark text for contrast */
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
-    font-size: 16px; /* Slightly larger font */
-    display: flex; /* Align icons and text properly */
+    border-radius: 5px; /* Rounded button corners */
+    font-size: 16px; /* Uniform font size */
+    display: flex;
     align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.2s; /* Smooth hover effects */
+    width: 40px; /* Fixed button width for consistency */
+    height: 40px; /* Fixed button height for consistency */
 }
 
 .toolbar button:hover {
     background-color: #fdd3f7; /* Change background on hover */
-    transform: translateY(-2px); /* Slight lift effect */
+    transform: translateY(-2px); /* Lift effect on hover */
 }
 
 .toolbar button.active {
@@ -39,8 +40,8 @@
 }
 
 .close-button {
-    margin-left: auto;
-    background-color: #ff4d4d; /* Red background for close button */
+    /* Push close button to the far right */
+    background-color: #ff4d4d; /* Red background */
     color: #ffffff; /* White text for contrast */
 }
 
