@@ -64,17 +64,20 @@ const Dashboard = () => {
   const NoteList = async () => {
     dispatch(setLoader(true));
     try{
-      const res = await fetch("/api/user/note-list", {
+      const res = await fetch("/api/notes/noteList", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("usersdatatoken"),
+          Accept: "application/json",
         },
+        credentials: "include",
       });
       const data = await res.json();
       dispatch(setLoader(false));
       if(data.status === 201){
         // set notes
+        setNotes(data?.note);
       }
     }catch(error){
       dispatch(setLoader(false));
@@ -187,6 +190,18 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
+        {/* Description */}
+        <div>
+        <p className="mt-2 text-sm text-maroon-600">  Description: {note.description ? "No content" : "Error"}</p>
+        </div>
+          {/* Tags */}
+          <div className="mt-2">
+            {note.tags && note.tags.map((tag, index) => (
+              <span key={index} className="bg-pink-200 text-pink-800 text-xs rounded-full px-2 py-1 mr-2">
+                {tag}
+              </span>
+            ))}
+          </div>
       </div>
     ))}
   </div>

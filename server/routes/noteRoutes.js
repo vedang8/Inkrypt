@@ -4,7 +4,7 @@ const noteController = require('../controllers/noteController');
 const authenticate = require("../middleware/auth");
 
 router.post('/create', authenticate, noteController.createNewNote);
+router.get('/noteList', authenticate, noteController.noteList);
 router.get('/:noteId', authenticate, noteController.getNote);
-router.get('/note-list', authenticate, noteController.noteList);
 
 module.exports = router;

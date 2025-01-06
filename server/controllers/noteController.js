@@ -1,5 +1,7 @@
 const notes = require("../models/Note");
 const {v4: uuidv4} = require('uuid');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 // Create a new note
 exports.createNewNote = async (req, res) => {
@@ -56,15 +58,17 @@ exports.getNote = async (req, res) => {
 
 exports.noteList = async (req, res) => {
     try{
-        const allNotes = await notes.find({user: req.userId});
-        if(!allNotes){
+        const allNotes = await notes.find({user: (req.userId)});
+        if(allNotes.length === 0){
             return res.status(404).json({
                 status: 404,
                 message: "Notes not found"
             });
         }
         const notesList = allNotes.map(note => ({
-            title: note.title
+            noteId: note.noteId,
+            title: note.title,
+            isPinned: note.isPinned
         }));
         return res.status(201).json({
             status: 201,
