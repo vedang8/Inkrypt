@@ -8,8 +8,9 @@ import { message } from "antd";
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const notes = useState([]);
+  const [notes, setNotes] = useState([]);
   const user = useSelector(selectUser);
+
   const DashboardValid = async () => {
     dispatch(setLoader(true));
     let token = localStorage.getItem("usersdatatoken");
@@ -25,7 +26,6 @@ const Dashboard = () => {
       dispatch(setLoader(false));
       if(data.status === 201){
           dispatch(login({name: data?.name, profile: data?.profile}))
-          navigate("/home");
       }else{
         throw new Error(data.message);
       }
@@ -61,9 +61,26 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    DashboardValid();
-  }, []);
+  const NoteList = async () => {
+    dispatch(setLoader(true));
+    try{
+      const res = await fetch("/api/user/note-list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("usersdatatoken"),
+        },
+      });
+      const data = await res.json();
+      dispatch(setLoader(false));
+      if(data.status === 201){
+        // set notes
+      }
+    }catch(error){
+      dispatch(setLoader(false));
+      message.error(error.message);
+    }
+  };
   
   const logoutUser = async () => {
     dispatch(setLoader(true));
@@ -95,6 +112,11 @@ const Dashboard = () => {
       navigate("/home");
     }
   };
+
+  useEffect(() => {
+    DashboardValid();
+    NoteList();
+  }, []);
 
   return (
     <div className="bg-gradient-to-r from-pink-300 via-pink-200 to-peach-100 min-h-screen">

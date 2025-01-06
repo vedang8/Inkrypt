@@ -53,3 +53,28 @@ exports.getNote = async (req, res) => {
         });
     }
 };
+
+exports.noteList = async (req, res) => {
+    try{
+        const allNotes = await notes.find({user: req.userId});
+        if(!allNotes){
+            return res.status(404).json({
+                status: 404,
+                message: "Notes not found"
+            });
+        }
+        const notesList = allNotes.map(note => ({
+            title: note.title
+        }));
+        return res.status(201).json({
+            status: 201,
+            note: notesList
+        });
+    }catch(error){
+        console.error("Error in Listing Notes", error.message);
+        return res.status(500).json({
+            status: 500,
+            error: "Internal server error"
+        });
+    }
+};
