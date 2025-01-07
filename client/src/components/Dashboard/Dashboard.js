@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
 import { login, logout, selectUser } from "../../redux/Slice/UserSlice";
 import { message } from "antd";
+import { FaThumbTack } from "react-icons/fa";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -183,7 +184,7 @@ const Dashboard = () => {
           <h3 className="text-lg font-semibold text-maroon-800">{note.title}</h3>
           <div className="flex items-center space-x-2">
             <button className="p-2 text-maroon-800">
-              📌
+              <FaThumbTack className="" onClick="" />
             </button>
             <button className="p-2 text-maroon-800">
               ⋮
