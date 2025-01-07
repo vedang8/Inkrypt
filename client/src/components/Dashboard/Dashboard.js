@@ -198,7 +198,7 @@ const Dashboard = () => {
 
   {/* Dashboard Content */}
   <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    {notes.map((note, index) => (
+    {notes.sort((a, b) => b.isPinned - a.isPinned).map((note, index) => (
       <div
         key={index}
         className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg border border-maroon-300 transition-shadow duration-300"
