@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
 import { login, logout, selectUser } from "../../redux/Slice/UserSlice";
 import { message } from "antd";
-import { FaThumbTack } from "react-icons/fa";
+import { FaThumbtack } from "react-icons/fa";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -117,6 +117,29 @@ const Dashboard = () => {
     }
   };
 
+  const togglePinNote = async (noteId, isPinned) => {
+    dispatch(setLoader(true));
+    try{
+      const res = await fetch("/api/notes/pinn", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("usersdatatoken"),
+        },
+        body: JSON.stringify({ noteId, pinned: !isPinned }),
+      });
+      const data = await res.json();
+      dispatch(setLoader(false));
+      if(data.status === 201){
+        message.success("Note's state is updated successfully");
+        NoteList();
+      }
+    }catch(error){
+      dispatch(setLoader(false));
+      message.error(error.message);
+    }
+  };
+
   useEffect(() => {
     DashboardValid();
     NoteList();
@@ -181,10 +204,15 @@ const Dashboard = () => {
         className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg border border-maroon-300 transition-shadow duration-300"
       >
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-maroon-800">{note.title}</h3>
+          <h3 className="text-lg font-semibold text-blue-400">{note?.title}</h3>
           <div className="flex items-center space-x-2">
-            <button className="p-2 text-maroon-800">
-              <FaThumbTack className="" onClick="" />
+          <button
+                className={`p-2 ${
+                  note?.isPinned ? "text-pink-500" : "text-gray-500"
+                } cursor-pointer`}
+                onClick={() => togglePinNote(note?.noteId, note?.isPinned)}
+              >
+              < FaThumbtack />
             </button>
             <button className="p-2 text-maroon-800">
               ⋮

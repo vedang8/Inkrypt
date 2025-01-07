@@ -82,3 +82,36 @@ exports.noteList = async (req, res) => {
         });
     }
 };
+
+exports.pinNote = async (req, res) => {
+    try{
+        const { noteId, pinned } = req.body;
+
+        // validating the request body
+        if(!noteId || typeof pinned === "undefined"){
+            return res.status(400).json({
+                status: 400,
+                error: "Invalid request payload"
+            });
+        }
+
+        const updatedNote = await notes.findOneAndUpdate({ noteId }, { isPinned: pinned }, { new: true });
+        if(!updatedNote){
+            return res.status(404).json({
+                status: 404,
+                error: "Note not Found",
+            });
+        }else{
+            return res.status(201).json({
+                status: 201,
+                message: "Note's state is updated successfully",
+            });
+        }
+    }catch(error){
+        console.error("Error in updating Notes state", error.message);
+        return res.status(500).json({
+            status: 500,
+            error: "Internal server error"
+        });
+    }
+};
