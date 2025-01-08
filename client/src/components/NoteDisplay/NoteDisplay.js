@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
 import { message } from "antd";
-import './NoteDisplay.css';
 import Toolbar from "../Toolbar/Toolbar";
 
 const NoteDisplay = ({onCloseNote}) => {
@@ -44,14 +43,46 @@ const NoteDisplay = ({onCloseNote}) => {
         fetchNote();
     }, [noteId]);
     return (
-        <div className='note-display'>
-            <Toolbar onEdit={handleEditClick} onCloseNote={onCloseNote} />
-            <h1>{note?.title || "Untitled"}</h1>
-            <div 
-                dangerouslySetInnerHTML={{ __html: note?.content || "No content " }} 
-            />
+        <div className="p-6 bg-gray-100 min-h-screen flex justify-center">
+            {/* Main Container */}
+            <div className="bg-white shadow-lg rounded-md max-w-4xl w-full p-6">
+                {/* Sticky Toolbar */}
+                <div className="sticky top-0 bg-white shadow-md p-4 rounded-md mb-4 flex justify-center">
+                    <Toolbar onEdit={handleEditClick} onCloseNote={onCloseNote} />
+                </div>
+    
+                {/* Content Section */}
+                <div className="px-6 py-4">
+                    {/* Tags Section */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {note?.tags?.map((tag, index) => (
+                            <span
+                                key={index}
+                                className="bg-purple-200 text-purple-800 px-3 py-1 rounded-full text-sm font-medium"
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+    
+                    {/* Title */}
+                    <h1
+                        className={`text-2xl font-bold mb-4 border-b pb-2 text-purple-600 `}
+                    >
+                        {note?.title || "Untitled"}
+                    </h1>
+    
+                    {/* Content */}
+                    <div
+                        className="prose prose-lg max-w-none text-gray-700"
+                        dangerouslySetInnerHTML={{
+                            __html: note?.content || "No content available",
+                        }}
+                    />
+                </div>
+            </div>
         </div>
-    )
+    );    
 }
 
 export default NoteDisplay;

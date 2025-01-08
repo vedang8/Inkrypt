@@ -1,5 +1,4 @@
 .toolbar {
-    
     align-items: center;
     display: flex;
     gap: 8px; /* Smaller, consistent spacing between buttons */
@@ -8,7 +7,7 @@
     background-color: #bc85db; /* Bright background */
     top: 0;
     z-index: 1000;
-    width: 40%; /* Full width for the toolbar */
+    width: 60%; /* Full width for the toolbar */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
     border-radius: 8px; /* Rounded corners */
 }
