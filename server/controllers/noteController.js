@@ -42,6 +42,7 @@ exports.getNote = async (req, res) => {
         }
         return res.status(201).json({
             status: 201,
+            noteId: note.noteId,
             title: note.title,
             content: note.content,
             isPinned: note.isPinned,
