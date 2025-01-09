@@ -18,7 +18,7 @@ function App() {
         <Route path="/register" element = {<Register />} />
         <Route path="/home" element = {<Dashboard />}  />
         <Route path="/note-display/:noteId" element = {<NoteDisplay />} />
-        <Route path="/note/edit/:noteId" element = {<NoteEditor/>} />
+        <Route path="/note/edit/:noteId" element = {<NoteEditor />} />
       </Routes>
     </BrowserRouter>
     </>
