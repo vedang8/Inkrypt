@@ -5,17 +5,23 @@ import { setLoader } from "../../redux/Slice/LoaderSlice";
 import { message } from "antd";
 import Toolbar from "../Toolbar/Toolbar";
 
-const NoteEditor = ({ onCloseNote }) => {
+const NoteEditor = () => {
     const { noteId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [note, setNote] = useState({ title: "", content: "", tags: [] });
-    const [isSaving, setIsSaving] = useState(false);
-    const contentRef = useRef(null);
+    //const [isSaving, setIsSaving] = useState(false);
+    //const contentRef = useRef(null);
     const [isEditing, setIsEditing] = useState(true);
     const [isBold, setIsBold] = useState(false);
     const [isItalic, setIsItalic] = useState(false);
     const [isUnderline, setIsUnderline] = useState(false);
+    const editorRef = useRef(null);
+    
+    const handleContentChange = (e) => {
+        const updatedContent = e.target.innerHTML;
+        setNote({ content: updatedContent });
+    };
 
     const toggleBold = () => {
         setIsBold(!isBold);
@@ -59,15 +65,40 @@ const NoteEditor = ({ onCloseNote }) => {
         }
     };
 
-    
-
     const handleChange = (field, value) => {
         setNote((prev) => ({ ...prev, [field]: value }));
     };
 
+    const onCloseNote = () => {
+        navigate(`/home`);
+    };
+
     useEffect(() => {
         fetchNote();
+        setIsBold(false);
+        setIsItalic(false);
+        setIsUnderline(false);
     }, [noteId]);
+    useEffect(() => {
+        const handleSelectionChange = () => {
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+
+            const parentElement = selection.getRangeAt(0).commonAncestorContainer.parentElement;
+
+            // Check if the selected text or caret position is inside bold/italic/underline text
+            // QueryCommandState will tell that is there any 
+            setIsBold(document.queryCommandState("bold"));
+            setIsItalic(document.queryCommandState("italic"));
+            setIsUnderline(document.queryCommandState("underline"));
+        };
+
+        document.addEventListener("selectionchange", handleSelectionChange);
+
+        return () => {
+            document.removeEventListener("selectionchange", handleSelectionChange);
+        };
+    }, []);
 
     return (
         <div className="p-6 bg-gray-100 min-h-screen flex justify-center">
@@ -82,7 +113,6 @@ const NoteEditor = ({ onCloseNote }) => {
                         isBold={isBold}
                         isItalic={isItalic}
                         isUnderline={isUnderline}
-                        
                     />
                 </div>
                 <div className="px-6 py-4 space-y-4">
@@ -94,19 +124,11 @@ const NoteEditor = ({ onCloseNote }) => {
                         placeholder="Enter note title"
                     />
                     <div
-                        ref={contentRef}
-                        contentEditable
-                        suppressContentEditableWarning
-                        onInput={(e) => {
-                            setNote((prev) => ({ ...prev, content: contentRef.current.innerHTML }));
-
-                        }}
-                        onMouseUp={handleContentSelection}
+                        ref={editorRef}
+                        contentEditable={isEditing}
+                        onInput={handleContentChange}
+                        style={{ direction: "ltr" }}
                         className="w-full h-64 border border-gray-300 p-4 rounded-md focus:outline-none overflow-auto"
-                        style={{
-                            textAlign: activeStyles.alignment,
-                            fontSize: `${activeStyles.fontSize}px`,
-                        }}
                         dangerouslySetInnerHTML={{ __html: note.content || "Start writing your note here..." }}
                     ></div>
                 </div>
