@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setLoader } from "../../redux/Slice/LoaderSlice";
@@ -11,6 +11,26 @@ const NoteEditor = ({ onCloseNote }) => {
     const dispatch = useDispatch();
     const [note, setNote] = useState({ title: "", content: "", tags: [] });
     const [isSaving, setIsSaving] = useState(false);
+    const contentRef = useRef(null);
+    const [isEditing, setIsEditing] = useState(true);
+    const [isBold, setIsBold] = useState(false);
+    const [isItalic, setIsItalic] = useState(false);
+    const [isUnderline, setIsUnderline] = useState(false);
+
+    const toggleBold = () => {
+        setIsBold(!isBold);
+        document.execCommand("bold");
+    };
+
+    const toggleItalic = () => {
+        setIsItalic(!isItalic);
+        document.execCommand("italic");
+    };
+
+    const toggleUnderline = () => {
+        setIsUnderline(!isUnderline);
+        document.execCommand("underline");
+    };
 
     const fetchNote = async () => {
         try {
@@ -68,7 +88,7 @@ const NoteEditor = ({ onCloseNote }) => {
     };
 
     const handleChange = (field, value) => {
-        setNote(prev => ({ ...prev, [field]: value }));
+        setNote((prev) => ({ ...prev, [field]: value }));
     };
 
     useEffect(() => {
@@ -77,32 +97,21 @@ const NoteEditor = ({ onCloseNote }) => {
 
     return (
         <div className="p-6 bg-gray-100 min-h-screen flex justify-center">
-            {/* Main Container */}
             <div className="bg-white shadow-lg rounded-md max-w-4xl w-full p-6">
-                {/* Sticky Toolbar */}
                 <div className="sticky top-0 bg-white shadow-md p-4 rounded-md mb-4 flex justify-center">
                     <Toolbar
+                        toggleBold={toggleBold}
+                        toggleItalic={toggleItalic}
+                        toggleUnderline={toggleUnderline}
                         onCloseNote={onCloseNote}
-                        onSave={handleSave}
-                        isSaving={isSaving}
+                        isEditing={isEditing}
+                        isBold={isBold}
+                        isItalic={isItalic}
+                        isUnderline={isUnderline}
+                        
                     />
                 </div>
-
-                {/* Content Section */}
                 <div className="px-6 py-4 space-y-4">
-                    {/* Tags Section */}
-                    <div className="flex flex-wrap gap-2">
-                        {note.tags.map((tag, index) => (
-                            <span
-                                key={index}
-                                className="bg-purple-200 text-purple-800 px-3 py-1 rounded-full text-sm font-medium"
-                            >
-                                {tag}
-                            </span>
-                        ))}
-                    </div>
-
-                    {/* Title */}
                     <input
                         type="text"
                         value={note.title}
@@ -110,14 +119,22 @@ const NoteEditor = ({ onCloseNote }) => {
                         className="w-full text-2xl font-bold border-b border-gray-300 pb-2 focus:outline-none focus:border-purple-600"
                         placeholder="Enter note title"
                     />
+                    <div
+                        ref={contentRef}
+                        contentEditable
+                        suppressContentEditableWarning
+                        onInput={(e) => {
+                            setNote((prev) => ({ ...prev, content: contentRef.current.innerHTML }));
 
-                    {/* Content */}
-                    <textarea
-                        value={note.content}
-                        onChange={(e) => handleChange("content", e.target.value)}
-                        className="w-full h-64 border border-gray-300 p-4 rounded-md focus:outline-none focus:border-purple-600"
-                        placeholder="Write your note content here..."
-                    />
+                        }}
+                        onMouseUp={handleContentSelection}
+                        className="w-full h-64 border border-gray-300 p-4 rounded-md focus:outline-none overflow-auto"
+                        style={{
+                            textAlign: activeStyles.alignment,
+                            fontSize: `${activeStyles.fontSize}px`,
+                        }}
+                        dangerouslySetInnerHTML={{ __html: note.content || "Start writing your note here..." }}
+                    ></div>
                 </div>
             </div>
         </div>

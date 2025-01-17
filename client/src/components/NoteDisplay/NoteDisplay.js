@@ -38,7 +38,7 @@ const NoteDisplay = ({onCloseNote}) => {
     const handleEditClick = () => {
         navigate(`/note/edit/${note?.noteId}`);
     };
-
+    
     useEffect(() => {
         fetchNote();
     }, [noteId]);
