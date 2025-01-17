@@ -59,33 +59,7 @@ const NoteEditor = ({ onCloseNote }) => {
         }
     };
 
-    const handleSave = async () => {
-        try {
-            setIsSaving(true);
-            dispatch(setLoader(true));
-            const res = await fetch(`/api/notes/${noteId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: localStorage.getItem("usersdatatoken"),
-                },
-                body: JSON.stringify(note),
-            });
-            const data = await res.json();
-            if (res.status === 200) {
-                dispatch(setLoader(false));
-                message.success("Note updated successfully");
-                navigate(`/note/${noteId}`);
-            } else {
-                throw new Error(data.message);
-            }
-        } catch (error) {
-            dispatch(setLoader(false));
-            message.error("Error Saving Note");
-        } finally {
-            setIsSaving(false);
-        }
-    };
+    
 
     const handleChange = (field, value) => {
         setNote((prev) => ({ ...prev, [field]: value }));
