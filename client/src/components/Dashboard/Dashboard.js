@@ -11,7 +11,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const [notes, setNotes] = useState([]);
   const user = useSelector(selectUser);
-
+  let pin = false;
   const DashboardValid = async () => {
     dispatch(setLoader(true));
     let token = localStorage.getItem("usersdatatoken");
@@ -118,6 +118,7 @@ const Dashboard = () => {
   };
 
   const togglePinNote = async (noteId, isPinned) => {
+    pin = true;
     dispatch(setLoader(true));
     try{
       const res = await fetch("/api/notes/pinn", {
@@ -223,7 +224,7 @@ const Dashboard = () => {
                     className={`p-2 text-lg ${
                       note?.isPinned ? "text-pink-900" : "text-gray-500"
                     } cursor-pointer`}
-                    onClick={() => togglePinNote(note?.noteId, note?.isPinned)}
+                    onClick={(e) => {togglePinNote(note?.noteId, note?.isPinned);e.stopPropagation(); }}
                   >
                     <FaThumbtack />
                   </button>
