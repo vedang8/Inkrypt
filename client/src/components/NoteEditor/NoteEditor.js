@@ -6,18 +6,17 @@ import { message } from "antd";
 import Toolbar from "../Toolbar/Toolbar";
 import debounce from 'lodash/debounce';
 import { io } from "socket.io-client";
+import ReactQuill from 'react-quill'; 
+import 'react-quill/dist/quill.snow.css';
 
 const NoteEditor = () => {
     const { noteId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [note, setNote] = useState({ title: "", content: "", tags: [] });
-    const [isBold, setIsBold] = useState(false);
-    const [isItalic, setIsItalic] = useState(false);
-    const [isUnderline, setIsUnderline] = useState(false);
-    const editorRef = useRef(null);
+    const [quill, setQuill] = useState(null);
     const socket = useRef(null);
-
+    const [value, setValue] = useState('');
     useEffect(() => {
         socket.current = io("http://localhost:7000", { transports: ["websocket", "polling", "flashsocket"] });
         socket.current.on("connect", () => console.log("Connected to WebSocket"));
@@ -32,31 +31,15 @@ const NoteEditor = () => {
         };
     }, [noteId]);
 
-    const handleContentChange = (e) => {
-        const updatedContent = e.target.innerHTML;
-        setNote((prev) => ({ ...prev, content: updatedContent }));
-        debouncedSave(updatedContent);
+    const handleContentChange = (value) => {
+        setNote((prev) => ({ ...prev, content: value }));
+        debouncedSave(value);
     };
 
     const handleTitleChange = async (e) => {
         const updatedTitle = e.target.value;
         setNote((prev) => ({ ...prev, title: updatedTitle }));
         await saveNote(updatedTitle, note.content);  // Save title change as well
-    };
-
-    const toggleBold = () => {
-        document.execCommand("bold");
-        setIsBold(document.queryCommandState("bold"));
-    };
-
-    const toggleItalic = () => {
-        document.execCommand("italic");
-        setIsItalic(document.queryCommandState("italic"));
-    };
-
-    const toggleUnderline = () => {
-        document.execCommand("underline");
-        setIsUnderline(document.queryCommandState("underline"));
     };
 
     const saveNote = async (title, content) => {
@@ -83,19 +66,6 @@ const NoteEditor = () => {
 
     const debouncedSave = useRef(debounce(saveNote, 1000)).current;
 
-    useEffect(() => {
-        const handleSelectionChange = () => {
-            setIsBold(document.queryCommandState("bold"));
-            setIsItalic(document.queryCommandState("italic"));
-            setIsUnderline(document.queryCommandState("underline"));
-        };
-
-        document.addEventListener("selectionchange", handleSelectionChange);
-        return () => {
-            document.removeEventListener("selectionchange", handleSelectionChange);
-        };
-    }, []);
-
     const fetchNote = async () => {
         try {
             dispatch(setLoader(true));
@@ -119,6 +89,22 @@ const NoteEditor = () => {
         }
     };
 
+    // defining toolbar options
+    const modules = {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false]}],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{color: []}, {background: []}],
+            [{font: ['sans-serif', 'serif', 'times-new-roman', 'arial']}],
+            [{size: ['small', false, 'large', 'huge']}],
+            [{align: []}],
+            ['blockquote', 'code-block'],
+            [{list: 'ordered'}, {list: 'bullet'}],
+            ['link', 'image'],
+            ['clean'],
+            ['close'],
+        ],
+    };
     useEffect(() => {
         fetchNote();
     }, [noteId]);
@@ -126,31 +112,15 @@ const NoteEditor = () => {
     return (
         <div className="p-6 bg-gray-100 min-h-screen flex justify-center">
             <div className="bg-white shadow-lg rounded-md max-w-4xl w-full p-6">
-                <div className="sticky top-0 bg-white shadow-md p-4 rounded-md mb-4 flex justify-center">
-                    <Toolbar
-                        toggleBold={toggleBold}
-                        toggleItalic={toggleItalic}
-                        toggleUnderline={toggleUnderline}
-                        isBold={isBold}
-                        isItalic={isItalic}
-                        isUnderline={isUnderline}
-                    />
-                </div>
-                <div className="px-6 py-4 space-y-4">
+                <div className="sticky top-0 bg-white px-6 py-4 space-y-4">
                     <input
                         type="text"
                         value={note.title}
-                        onChange={handleTitleChange}  // Handle title change and save
+                        onChange={handleTitleChange}
                         className="w-full text-2xl font-bold border-b border-gray-300 pb-2 focus:outline-none focus:border-purple-600"
                         placeholder="Enter note title"
                     />
-                    <div
-                        ref={editorRef}
-                        contentEditable={true}
-                        onInput={handleContentChange}
-                        className="w-full h-64 border border-gray-300 p-4 rounded-md focus:outline-none overflow-auto"
-                        dangerouslySetInnerHTML={{ __html: note.content }}
-                    ></div>
+                    <ReactQuill value={value} onCange={setValue} modules={modules} />
                 </div>
             </div>
         </div>
