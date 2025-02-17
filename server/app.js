@@ -20,7 +20,10 @@ const io = socketIo(server, {
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
-
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
 // Routes
 app.use('/api/user', userRoutes);
 app.use('/api/notes', noteRoutes);

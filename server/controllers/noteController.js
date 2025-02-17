@@ -117,38 +117,42 @@ exports.pinNote = async (req, res) => {
     }
 };
 
-// Controller function to save or update a note
 exports.saveNote = async (req, res) => {
     try {
         const { title, content } = req.body;
-        const noteId = req.params.id; // Get the note ID from the URL parameter
+        const noteId = req.params.noteId; // Get the note ID from the URL parameter
+        console.log("NoteId: ", noteId);
 
         // Check if the note exists in the database
-        let note = await notes.findOne({noteId: noteId});
+        let note = await notes.findOne({ noteId: String(noteId) });
 
         if (!note) {
             // If the note doesn't exist, create a new one
             note = new notes({
                 noteId: noteId,  // Set the ID manually (optional)
+                user: req.userId,
                 title: title,
                 content: content,
                 tags: [], // You can modify this part if you want to handle tags as well
             });
             await note.save();  // Save the new note to the database
-            res.status(201).json({ message: 'Note created successfully', note });
+            res.status(201).json({ message: 'Note created successfully' }); // No need to return the note
         } else {
             // If the note exists, update the title and content
             note.title = title || note.title;  // Update title
             note.content = content || note.content;  // Update content
 
             await note.save();  // Save the updated note
-
-            res.status(200).json({ message: 'Note updated successfully', note });
+            res.status(201).json({ message: 'Note updated successfully' }); // No need to return the note
         }
 
         // After saving the note (new or updated), emit the change via WebSocket to all connected clients
-        io.emit('noteUpdate', { id: noteId, title, content });
-
+        if (req.io) {
+            //req.io.emit("noteUpdate", { id: noteId, title: note.title, content: note.content });
+            console.log("WebSocket emitted successfully");
+        } else {
+            console.error("WebSocket (req.io) is not initialized");
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Failed to save or update the note' });
