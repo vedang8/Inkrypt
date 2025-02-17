@@ -2,6 +2,7 @@ const notes = require("../models/Note");
 const {v4: uuidv4} = require('uuid');
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
+const AIHelper = require('../utils/AIHelper');
 
 // Create a new note
 exports.createNewNote = async (req, res) => {
@@ -66,10 +67,14 @@ exports.noteList = async (req, res) => {
                 message: "Notes not found"
             });
         }
-        const notesList = allNotes.map(note => ({
-            noteId: note.noteId,
-            title: note.title,
-            isPinned: note.isPinned
+        const notesList = await Promise.all(allNotes.map(async (note) => {
+            const description = await AIHelper.fetchDescriptionFromAI(note.title, note.content); 
+            return {
+                noteId: note.noteId,
+                title: note.title,
+                isPinned: note.isPinned,
+                description: description  // Add AI-generated description
+            };
         }));
         return res.status(201).json({
             status: 201,

@@ -235,7 +235,7 @@ const Dashboard = () => {
               <div>
                 <p className="mt-2 text-sm text-maroon-600">
                   {" "}
-                  Description: {note.description ? "No content" : "Error"}
+                  Description: {note?.description ? note?.description : "No content"}
                 </p>
               </div>
               {/* Tags */}
