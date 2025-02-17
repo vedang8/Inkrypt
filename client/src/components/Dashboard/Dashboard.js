@@ -10,6 +10,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [notes, setNotes] = useState([]);
+  const [expanded, setExpanded] = useState(false);
   const user = useSelector(selectUser);
   let pin = false;
   const DashboardValid = async () => {
@@ -216,7 +217,7 @@ const Dashboard = () => {
               onClick={() => {navigate(`/note-display/${note?.noteId}`)}}
             >
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-blue-400">
+                <h3 className="text-2xl font-semibold text-blue-400">
                   {note?.title}
                 </h3>
                 <div className="flex items-center space-x-2">
@@ -233,9 +234,23 @@ const Dashboard = () => {
               </div>
               {/* Description */}
               <div>
-                <p className="mt-2 text-sm text-maroon-600">
+                <p className="mt-2 text-x text-maroon-600">
                   {" "}
-                  Description: {note?.description ? note?.description : "No content"}
+                  Description: {note?.description
+          ? expanded
+            ? note?.description
+            : note?.description.length > 50
+            ? `${note?.description.substring(0, 50)}...`
+            : note?.description
+          : "No content"}
+        {note?.description && note?.description.length > 100 && (
+          <button
+            className="text-blue-500 ml-2"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? "Show Less" : "Read More"}
+          </button>
+        )}
                 </p>
               </div>
               {/* Tags */}
